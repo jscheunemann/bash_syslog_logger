@@ -1,0 +1,1 @@
+# bash_syslog_logger

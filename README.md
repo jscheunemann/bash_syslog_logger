@@ -58,11 +58,13 @@ declare -i SYSLOG_SEVERITY_DEBUG=7
 
 # The following uses the user facility to log errors to the STDERR file descriptor
 log_error() {
+    unset SYSLOG_SEVERITY_MSG_HEADER
     syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_ERROR} ${SYSLOG_APP_NAME} ${NILVALUE} ${NILVALUE} ${NILVALUE} "${1}" ${FD_STDERR}
 }
 
 # The following uses the user facility to log informational messages to the STDOUT file descriptor
 log_info() {
+    SYSLOG_SEVERITY_MSG_HEADER="###"
     syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_INFORMATIONAL} ${SYSLOG_APP_NAME} ${NILVALUE} ${NILVALUE} ${NILVALUE} "${1}" ${FD_STDOUT}
 }
 
@@ -73,6 +75,6 @@ log_debug() {
 }
 
 log_error "This better work, nope error!"
-log_info "Here is my info msg"
+log_info  "Here is my info msg"
 log_debug "I have some debugging to do"
 ~~~

@@ -86,7 +86,7 @@ function syslog_logger() {
     PROC_ID=${1}
     shift
 
-    MSG_ID=${ID}
+    MSG_ID=${1}
     shift
 
     STRUCTURED_DATA=${1}

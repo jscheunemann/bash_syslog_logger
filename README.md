@@ -2,9 +2,17 @@
 
 ### Options
 
-the syslog_logger function takes the following arguments; facility, severity, message, variable number of either file descriptors or filenames used to write messages
+the syslog_logger function takes the following arguments; facility, severity, message, variable number of either file descriptors or filenames used to write messages.
 
-This is the list of possible facility and severity values
+These variables can be used to control how the logger outputs messages
+
+~~~
+STDOUT_LOG_LEVEL=${SYSLOG_SEVERITY_ERROR}   # Only log messages with a severity of error or greater to stdout/stderr
+FILE_LOG_LEVEL=${SYSLOG_SEVERITY_DEBUG}     # Only log messages with a severity of debug or greater to file
+APP_NAME="my_app"                           # Sets the app name supplied to syslog
+~~~
+
+This is the list of possible facility and severity values, these constants are predefined in the syslog.sh file
 
 ~~~
 # Facility
@@ -42,25 +50,25 @@ declare -i SYSLOG_SEVERITY_WARNING=4
 declare -i SYSLOG_SEVERITY_NOTICE=5
 declare -i SYSLOG_SEVERITY_INFORMATIONAL=6
 declare -i SYSLOG_SEVERITY_DEBUG=7
-
-
-STDOUT_LOG_LEVEL=${SYSLOG_SEVERITY_ERROR}
-FILE_LOG_LEVEL=${SYSLOG_SEVERITY_DEBUG}
-APP_NAME="my_app"
 ~~~
 
 ### Examples
 ~~~
+
+# The following uses the user facility to log errors to the STDERR file descriptor
 log_error() {
     syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_ERROR} "${1}" ${FD_STDERR}
 }
 
+# The following uses the user facility to log informational messages to the STDOUT file descriptor
 log_info() {
     syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_INFORMATIONAL} "${1}" ${FD_STDOUT}
 }
 
+# The following uses the user facility to log debug messages to the STDOUT file descriptor and to the logger.txt file
 log_debug() {
-    syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_DEBUG} "${1}" ${FD_STDOUT}
+    LOGGER_FILE="logger.txt"
+    syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_DEBUG} "${1}" ${FD_STDOUT} ${LOGGER_FILE}
 }
 
 log_error "This better work, nope error!"

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+!/usr/bin/env bash
 
 # Parse RFC 5424 messages using \<(?P<PRI>\d+)\>(?P<VERSION>\d+)?\s(?P<YEAR>\d+)-(?P<MONTH>\d+)-(?P<DAY>\d+)T(?P<HOUR>\d+):(?P<MINUTE>\d+):(?P<SECOND>\d+)(?:\.(?P<MILLISECONDS>\d+))?(?P<OFFSET>(?:[\+-]\d+:\d+)|(?:Z))\s(?P<HOSTNAME>(?:-)|(?:[a-zA-Z0-9\-\.]+))\s(?P<APPNAME>(?:-)|\b\w+\b)\s(?P<PROCID>(?:-)|\b\w+\b)\s(?P<MSGID>(?:-)|\b\w+\b)\s(?P<STRUCDATA>(?:-)|\[.*?\])\s(?P<MSG>(?:-)|\b.*)$
 
@@ -58,8 +58,8 @@ if [ -z "${FILE_LOG_LEVEL}" ]; then
     FILE_LOG_LEVEL=${SYSLOG_SEVERITY_DEBUG}
 fi
 
-if [ -z "${APP_NAME}" ]; then
-    APP_NAME="my_app"
+if [ -z "${SYSLOG_APP_NAME}" ]; then
+    SYSLOG_APP_NAME="my_app"
 fi
 
 NILVALUE="-"
@@ -70,6 +70,26 @@ function syslog_logger() {
     shift
 
     declare -i SEVERITY=${1}
+    shift
+
+    TIMESTAMP=$(date -u '+%Y-%m-%dT%H:%M:%S.%6NZ')
+
+    if [ "${SYSLOG_MODE}" -ne "${SYSLOG_MODE_RFC_5424}" ]; then
+        TIMESTAMP=$(date '+%b %d %H:%M:%S')
+    fi
+
+    HOSTNAME=$(hostname)
+
+    APP_NAME=${1}
+    shift
+
+    PROC_ID=${1}
+    shift
+
+    MSG_ID=${ID}
+    shift
+
+    STRUCTURED_DATA=${1}
     shift
 
     MSG=${1}
@@ -100,9 +120,9 @@ function syslog_logger() {
         re='^[0-9]+$'
 
         if [ "${SYSLOG_MODE}" -eq "${SYSLOG_MODE_RFC_5424}" ]; then
-            SYSLOG_MESSAGE="<$((${FACILITY} * 8 + ${SEVERITY}))>${RFC_5424_VERSION} $(date -u '+%Y-%m-%dT%H:%M:%S.%6NZ') $(hostname) ${APP_NAME} ${NILVALUE} ${NILVALUE} ${NILVALUE} ${MSG}"
+            SYSLOG_MESSAGE="<$((${FACILITY} * 8 + ${SEVERITY}))>${RFC_5424_VERSION} ${TIMESTAMP} ${HOSTNAME} ${APP_NAME} ${PROC_ID} ${MSG_ID} ${STRUCTURED_DATA} ${MSG}"
         else
-            SYSLOG_MESSAGE="<$((${FACILITY} * 8 + ${SEVERITY}))>$(date '+%b %d %H:%M:%S') $(hostname) ${APP_NAME}: ${MSG}"
+            SYSLOG_MESSAGE="<$((${FACILITY} * 8 + ${SEVERITY}))>${TIMESTAMP} ${HOSTNAME} ${APP_NAME}: ${MSG}"
         fi
             
 

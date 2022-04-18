@@ -57,18 +57,18 @@ declare -i SYSLOG_SEVERITY_DEBUG=7
 
 # The following uses the user facility to log errors to the STDERR file descriptor
 log_error() {
-    syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_ERROR} "${1}" ${FD_STDERR}
+    syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_ERROR} ${SYSLOG_APP_NAME} ${NILVALUE} ${NILVALUE} ${NILVALUE} "${1}" ${FD_STDERR}
 }
 
 # The following uses the user facility to log informational messages to the STDOUT file descriptor
 log_info() {
-    syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_INFORMATIONAL} "${1}" ${FD_STDOUT}
+    syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_INFORMATIONAL} ${SYSLOG_APP_NAME} ${NILVALUE} ${NILVALUE} ${NILVALUE} "${1}" ${FD_STDOUT}
 }
 
 # The following uses the user facility to log debug messages to the STDOUT file descriptor and to the logger.txt file
 log_debug() {
     LOGGER_FILE="logger.txt"
-    syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_DEBUG} "${1}" ${FD_STDOUT} ${LOGGER_FILE}
+    syslog_logger ${SYSLOG_FACILITY_USER} ${SYSLOG_SEVERITY_DEBUG} ${SYSLOG_APP_NAME} ${NILVALUE} ${NILVALUE} ${NILVALUE} "${1}" ${FD_STDOUT} ${LOGGER_FILE}
 }
 
 log_error "This better work, nope error!"

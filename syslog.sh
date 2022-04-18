@@ -59,7 +59,7 @@ if [ -z "${FILE_LOG_LEVEL}" ]; then
 fi
 
 if [ -z "${APP_NAME}" ]; then
-    APP_NAME="init_host"
+    APP_NAME="my_app"
 fi
 
 NILVALUE="-"

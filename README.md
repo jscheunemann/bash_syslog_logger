@@ -9,7 +9,7 @@ These variables can be used to control how the logger outputs messages
 ~~~
 STDOUT_LOG_LEVEL=${SYSLOG_SEVERITY_ERROR}   # Only log messages with a severity of error or greater to stdout/stderr
 FILE_LOG_LEVEL=${SYSLOG_SEVERITY_DEBUG}     # Only log messages with a severity of debug or greater to file
-APP_NAME="my_app"                           # Sets the app name supplied to syslog
+SYSLOG_APP_NAME="my_app"                           # Sets the app name supplied to syslog
 ~~~
 
 This is the list of possible facility and severity values, these constants are predefined in the syslog.sh file

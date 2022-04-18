@@ -1,4 +1,4 @@
-!/usr/bin/env bash
+#!/usr/bin/env bash
 
 # Parse RFC 5424 messages using \<(?P<PRI>\d+)\>(?P<VERSION>\d+)?\s(?P<YEAR>\d+)-(?P<MONTH>\d+)-(?P<DAY>\d+)T(?P<HOUR>\d+):(?P<MINUTE>\d+):(?P<SECOND>\d+)(?:\.(?P<MILLISECONDS>\d+))?(?P<OFFSET>(?:[\+-]\d+:\d+)|(?:Z))\s(?P<HOSTNAME>(?:-)|(?:[a-zA-Z0-9\-\.]+))\s(?P<APPNAME>(?:-)|\b\w+\b)\s(?P<PROCID>(?:-)|\b\w+\b)\s(?P<MSGID>(?:-)|\b\w+\b)\s(?P<STRUCDATA>(?:-)|\[.*?\])\s(?P<MSG>(?:-)|\b.*)$
 
@@ -51,11 +51,11 @@ declare -i SYSLOG_SEVERITY_DEBUG=7
 
 # Misc
 if [ -z "${STDOUT_LOG_LEVEL}" ]; then
-    STDOUT_LOG_LEVEL=${SYSLOG_SEVERITY_ERROR}
+    declare -i STDOUT_LOG_LEVEL=${SYSLOG_SEVERITY_ERROR}
 fi
 
 if [ -z "${FILE_LOG_LEVEL}" ]; then
-    FILE_LOG_LEVEL=${SYSLOG_SEVERITY_DEBUG}
+    declare -i FILE_LOG_LEVEL=${SYSLOG_SEVERITY_DEBUG}
 fi
 
 if [ -z "${SYSLOG_APP_NAME}" ]; then
@@ -96,21 +96,21 @@ function syslog_logger() {
     shift
 
     case ${SEVERITY} in
-        ${SEVERITY_EMERGENCY})
+        ${SYSLOG_SEVERITY_EMERGENCY})
             SEVERITY_MSG="Emergency";;
-        ${SEVERITY_ALERT})
+        ${SYSLOG_SEVERITY_ALERT})
             SEVERITY_MSG="Alert";;
-        ${SEVERITY_CRITICAL})
+        ${SYSLOG_SEVERITY_CRITICAL})
             SEVERITY_MSG="Critical";;
-        ${SEVERITY_ERROR})
+        ${SYSLOG_SEVERITY_ERROR})
             SEVERITY_MSG="Error";;
-        ${SEVERITY_WARNING})
+        ${SYSLOG_SEVERITY_WARNING})
             SEVERITY_MSG="Warning";;
-        ${SEVERITY_NOTICE})
+        ${SYSLOG_SEVERITY_NOTICE})
             SEVERITY_MSG="Notice";;
-        ${SEVERITY_INFORMATIONAL})
+        ${SYSLOG_SEVERITY_INFORMATIONAL})
             SEVERITY_MSG="Info";;
-        ${SEVERITY_DEBUG})
+        ${SYSLOG_SEVERITY_DEBUG})
             SEVERITY_MSG="Debug";;
         *)
             SEVERITY_MSG="Info";;
@@ -125,7 +125,6 @@ function syslog_logger() {
             SYSLOG_MESSAGE="<$((${FACILITY} * 8 + ${SEVERITY}))>${TIMESTAMP} ${HOSTNAME} ${APP_NAME}: ${MSG}"
         fi
             
-
         if [[ ${i} =~ ${re} ]]; then
             if [ "${SEVERITY}" -le "${STDOUT_LOG_LEVEL}" ]; then
                 echo "${SEVERITY_MSG}: ${MSG}" >&${i}

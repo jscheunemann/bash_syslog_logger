@@ -51,7 +51,7 @@ declare -i SYSLOG_SEVERITY_DEBUG=7
 
 # Misc
 if [ -z "${STDOUT_LOG_LEVEL}" ]; then
-    declare -i STDOUT_LOG_LEVEL=${SYSLOG_SEVERITY_ERROR}
+    declare -i STDOUT_LOG_LEVEL=${SYSLOG_SEVERITY_INFORMATIONAL}
 fi
 
 if [ -z "${FILE_LOG_LEVEL}" ]; then
@@ -60,6 +60,10 @@ fi
 
 if [ -z "${SYSLOG_APP_NAME}" ]; then
     SYSLOG_APP_NAME="my_app"
+fi
+
+if [ -z "${SYSLOG_SEVERITY_MSG_HEADER}" ]; then
+    unset SYSLOG_SEVERITY_MSG_HEADER
 fi
 
 NILVALUE="-"
@@ -116,6 +120,10 @@ function syslog_logger() {
             SEVERITY_MSG="Info";;
     esac
 
+    if [ -z ${SYSLOG_SEVERITY_MSG_HEADER} ]; then
+        SYSLOG_SEVERITY_MSG_HEADER="${SEVERITY_MSG}:"
+    fi
+
     for i in "${@}"; do
         re='^[0-9]+$'
 
@@ -127,7 +135,7 @@ function syslog_logger() {
             
         if [[ ${i} =~ ${re} ]]; then
             if [ "${SEVERITY}" -le "${STDOUT_LOG_LEVEL}" ]; then
-                echo "${SEVERITY_MSG}: ${MSG}" >&${i}
+                echo "${SYSLOG_SEVERITY_MSG_HEADER} ${MSG}" >&${i}
             fi
         else
             if [ "${SEVERITY}" -le "${FILE_LOG_LEVEL}" ]; then
